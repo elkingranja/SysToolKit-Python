@@ -1,0 +1,35 @@
+@echo off
+REM ==============================================
+REM  Script: build_exe.bat
+REM  Descripción: Genera SysToolKit.exe usando PyInstaller
+REM ==============================================
+
+echo =============================================
+echo  Generando ejecutable SysToolKit (UTF-8)
+echo =============================================
+
+REM 1. Activar entorno virtual si existe
+if exist ".venv\Scripts\activate.bat" (
+    call .venv\Scripts\activate.bat
+)
+
+REM 2. Instalar dependencias (asegura que requirements.txt está actualizado)
+echo Instalando dependencias...
+pip install -r requirements.txt
+
+REM 3. Limpiar compilaciones anteriores
+echo Limpiando carpetas build/ dist/ y spec...
+rmdir /s /q build
+rmdir /s /q dist
+del /q main_utf8.spec 2>nul
+
+REM 4. Ejecutar PyInstaller para crear un único exe
+echo Ejecutando PyInstaller...
+pyinstaller --onefile main_utf8.py --name SysToolKit
+
+REM 5. Finalización
+echo.
+echo =============================================
+echo  ¡Listo! Ejecutable generado en: dist\SysToolKit.exe
+echo =============================================
+pause
