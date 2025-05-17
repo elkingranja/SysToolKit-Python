@@ -20,27 +20,57 @@ def obtener_uptime():
     encendido = datetime.datetime.fromtimestamp(segundos)
     return str(ahora - encendido).split('.')[0]  # sin microsegundos
 
+def obtener_ips():
+    ips = []
+    for iface, addrs in psutil.net_if_addrs().items():
+        for addr in addrs:
+            if addr.family == socket.AF_INET:
+                ips.append(f"{iface}: {addr.address}")
+    return ips if ips else ["No disponible"]
+
 def sys_summary():
-    print("=== RESUMEN COMPLETO DEL SISTEMA ===\n")
-    print(f"Sistema: {platform.system()} {platform.release()} ({platform.machine()})")
-    print(f"Uptime: {obtener_uptime()}")
-    print(f"Usuario actual: {os.getlogin()}")
-    print(f"Dirección IP: {obtener_ip()}")
+    resumen = []
+    resumen.append("=== RESUMEN COMPLETO DEL SISTEMA ===\n")
+    resumen.append(f"Sistema: {platform.system()} {platform.release()} ({platform.machine()})")
+    resumen.append(f"Uptime: {obtener_uptime()}")
+    try:
+        usuario = os.getlogin()
+    except Exception:
+        usuario = "No disponible"
+    resumen.append(f"Usuario actual: {usuario}")
+    resumen.append(f"Dirección IP principal: {obtener_ip()}")
 
-    print("\nCPU:")
-    print(f" - Núcleos físicos: {psutil.cpu_count(logical=False)}")
-    print(f" - Núcleos lógicos: {psutil.cpu_count(logical=True)}")
-    print(f" - Uso actual: {psutil.cpu_percent(interval=1)}%")
+    resumen.append("\n--- CPU ---")
+    resumen.append(f" - Núcleos físicos: {psutil.cpu_count(logical=False)}")
+    resumen.append(f" - Núcleos lógicos: {psutil.cpu_count(logical=True)}")
+    resumen.append(f" - Uso actual: {psutil.cpu_percent(interval=1)}%")
 
-    print("\nRAM:")
+    resumen.append("\n--- RAM ---")
     ram = psutil.virtual_memory()
-    print(f" - Total: {ram.total // (1024**2)} MB")
-    print(f" - En uso: {ram.percent}%")
+    resumen.append(f" - Total: {ram.total // (1024**2)} MB")
+    resumen.append(f" - En uso: {ram.percent}%")
 
-    print("\nDisco:")
-    disco = shutil.disk_usage("/")
-    print(f" - Total: {disco.total // (1024**3)} GB")
-    print(f" - En uso: {disco.used // (1024**3)} GB ({(disco.used/disco.total)*100:.1f}%)")
+    resumen.append("\n--- Direcciones IP ---")
+    for ip in obtener_ips():
+        resumen.append(f" - {ip}")
+
+    resumen.append(f"\nProcesos activos: {len(psutil.pids())}")
+
+    resumen.append("\n--- Disco ---")
+    if os.name == "nt":
+        disco = shutil.disk_usage(os.environ["SystemDrive"] + "\\")
+    else:
+        disco = shutil.disk_usage("/")
+    resumen.append(f" - Total: {disco.total // (1024**3)} GB")
+    resumen.append(f" - En uso: {disco.used // (1024**3)} GB ({(disco.used/disco.total)*100:.1f}%)")
+
+    print("\n".join(resumen))
+
+    opcion = input("\n¿Desea guardar este resumen en un archivo? (s/n): ").strip().lower()
+    if opcion == "s":
+        with open("resumen_sistema.txt", "w", encoding="utf-8") as f:
+            f.write("\n".join(resumen))
+        print("Resumen guardado en resumen_sistema.txt")
 
     input("\nPresiona Enter para volver al menú...")
 

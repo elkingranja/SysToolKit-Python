@@ -53,4 +53,5 @@ def user_creator():
     input("\nPresiona Enter para volver al menú...")
 
 if __name__ == "__main__":
+    user_creator()
     input("\nPresiona Enter para volver al menú...")

@@ -59,4 +59,5 @@ def user_groups():
     input("\nPresiona Enter para volver al menú...")
 
 if __name__ == "__main__":
+    user_groups()
     input("\nPresiona Enter para volver al menú...")

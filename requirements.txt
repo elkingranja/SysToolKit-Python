@@ -3,3 +3,5 @@ fpdf
 pdf2docx
 pypdf
 Pillow
+pyinstaller
+colorama

@@ -4,14 +4,13 @@ import time
 import os
 from datetime import datetime
 import platform
-from colorama import init  # Para compatibilidad de colores ANSI en Windows
+from colorama import init
 init(autoreset=True)
 
 LOG_DIR = os.path.expanduser("~/SysToolKit_logs")
 LOG_FILE = os.path.join(LOG_DIR, "custom_alert.log")
 os.makedirs(LOG_DIR, exist_ok=True)
 
-# Colores ANSI (funciona en la mayoría de terminales)
 RED = "\033[91m"
 GREEN = "\033[92m"
 YELLOW = "\033[93m"
@@ -22,28 +21,51 @@ def log_event(message: str):
     with open(LOG_FILE, "a") as f:
         f.write(f"{timestamp} - {message}\n")
 
+def input_int(prompt, min_val, max_val):
+    while True:
+        val = input(prompt)
+        if val.lower() in ['q', 'salir', 'exit']:
+            print("Saliendo del programa.")
+            exit(0)
+        try:
+            val = int(val)
+            if min_val <= val <= max_val:
+                return val
+            else:
+                print(f"Por favor, ingresa un valor entre {min_val} y {max_val}.")
+        except ValueError:
+            print("Entrada inválida. Intenta de nuevo.")
+
 def choose_metrics():
     choices = {}
-    print("=== SELECCIÓN DE MÉTRICAS A MONITORIZAR ===\n")
-    try:
-        if input("¿Monitorear CPU? (s/n): ").lower() == 's':
-            threshold = int(input("  Umbral CPU (%): "))
-            if not 0 < threshold <= 100:
-                raise ValueError("El umbral debe estar entre 1 y 100.")
-            choices['cpu'] = threshold
-        if input("\n¿Monitorear RAM? (s/n): ").lower() == 's':
-            threshold = int(input("  Umbral RAM (%): "))
-            if not 0 < threshold <= 100:
-                raise ValueError("El umbral debe estar entre 1 y 100.")
-            choices['ram'] = threshold
-        if input("\n¿Monitorear disco? (s/n): ").lower() == 's':
-            threshold = int(input("  Umbral Disco (%): "))
-            if not 0 < threshold <= 100:
-                raise ValueError("El umbral debe estar entre 1 y 100.")
-            choices['disk'] = threshold
-    except ValueError as e:
-        print(f"Entrada inválida: {e}")
-        exit(1)
+    print("=== SELECCIÓN DE MÉTRICAS A MONITORIZAR ===")
+    print("Escribe 'q' en cualquier momento para salir.\n")
+    if input("¿Monitorear CPU? (s/n): ").lower() == 's':
+        threshold = input_int("  Umbral CPU (%): ", 1, 100)
+        choices['cpu'] = threshold
+    if input("¿Monitorear RAM? (s/n): ").lower() == 's':
+        threshold = input_int("  Umbral RAM (%): ", 1, 100)
+        choices['ram'] = threshold
+    if input("¿Monitorear disco? (s/n): ").lower() == 's':
+        threshold = input_int("  Umbral Disco (%): ", 1, 100)
+        disks = get_disks()
+        if disks:
+            print("Discos disponibles:")
+            for idx, d in enumerate(disks):
+                print(f"  {idx+1}. {d}")
+            while True:
+                selected = input(f"Selecciona el/los disco(s) (1-{len(disks)}, separados por coma): ")
+                if selected.lower() in ['q', 'salir', 'exit']:
+                    print("Saliendo del programa.")
+                    exit(0)
+                indices = [int(i)-1 for i in selected.split(",") if i.strip().isdigit() and 0 < int(i) <= len(disks)]
+                if indices:
+                    choices['disk'] = {'threshold': threshold, 'disks': [disks[i] for i in indices]}
+                    break
+                else:
+                    print("Selección inválida. Intenta de nuevo.")
+        else:
+            print("No se encontraron discos para monitorear.")
 
     if not choices:
         print("No se seleccionó ninguna métrica. Saliendo.")
@@ -51,29 +73,33 @@ def choose_metrics():
     return choices
 
 def get_disks():
-    system = platform.system().lower()
     partitions = psutil.disk_partitions(all=False)
     disks = []
     for part in partitions:
-        # filtrar CD-ROMs y unidades ocultas
         if 'cdrom' in part.opts or part.fstype == '':
             continue
         disks.append(part.mountpoint)
     return disks
 
-def monitor(choices, interval):
-    disks = get_disks() if 'disk' in choices else []
-    if 'disk' in choices and not disks:
-        print("No se encontraron discos disponibles para monitorear.")
-        choices.pop('disk')
+def resumen_config(choices):
+    print("\n=== RESUMEN DE CONFIGURACIÓN ===")
+    if 'cpu' in choices:
+        print(f"CPU: Umbral {choices['cpu']}%")
+    if 'ram' in choices:
+        print(f"RAM: Umbral {choices['ram']}%")
+    if 'disk' in choices:
+        print(f"Disco(s): {', '.join(choices['disk']['disks'])} Umbral {choices['disk']['threshold']}%")
+    print("===============================\n")
 
+def monitor(choices, interval):
+    disks = choices['disk']['disks'] if 'disk' in choices else []
     print(f"\nMonitoreando cada {interval}s. Presiona Ctrl+C para detener.\n")
     try:
         while True:
             start_time = time.time()
             now = datetime.now().strftime("%H:%M:%S")
             if 'cpu' in choices:
-                cpu = psutil.cpu_percent(interval=0)  # Evitar retraso adicional
+                cpu = psutil.cpu_percent(interval=0)
                 msg = f"CPU: {cpu}% (umbral {choices['cpu']}%)"
                 if cpu > choices['cpu']:
                     print(f"{RED}{now} {msg}{RESET}")
@@ -94,8 +120,8 @@ def monitor(choices, interval):
                 for d in disks:
                     try:
                         usage = psutil.disk_usage(d).percent
-                        msg = f"DISCO[{d}]: {usage}% (umbral {choices['disk']}%)"
-                        if usage > choices['disk']:
+                        msg = f"DISCO[{d}]: {usage}% (umbral {choices['disk']['threshold']}%)"
+                        if usage > choices['disk']['threshold']:
                             print(f"{YELLOW}{now} {msg}{RESET}")
                             log_event(f"ALERTA DISCO[{d}] - {msg}")
                         else:
@@ -105,7 +131,7 @@ def monitor(choices, interval):
                         log_event(f"ERROR - No se pudo acceder al disco {d}.")
 
             elapsed_time = time.time() - start_time
-            time.sleep(max(0, interval - elapsed_time))  # Ajustar el intervalo
+            time.sleep(max(0, interval - elapsed_time))
     except KeyboardInterrupt:
         print("\nMonitoreo detenido por el usuario.")
     except psutil.Error as e:
@@ -115,13 +141,32 @@ def monitor(choices, interval):
         log_event(f"ERROR - {str(e)}")
         print(f"{RED}Error inesperado: {str(e)}{RESET}")
 
+def mostrar_ayuda():
+    print("""
+=== AYUDA RÁPIDA ===
+Este script permite monitorear CPU, RAM y discos.
+- Puedes salir en cualquier momento escribiendo 'q'.
+- Los logs se guardan en: {}
+- Usa colores para alertas y estados normales.
+- Si tienes dudas, revisa el archivo de log para más detalles.
+====================
+""".format(LOG_FILE))
+
 def main():
     print("=== ALERTAS PERSONALIZADAS MEJORADAS ===\n")
+    if any(arg in ['-h', '--help', 'help'] for arg in os.sys.argv):
+        mostrar_ayuda()
+        return
     choices = choose_metrics()
+    resumen_config(choices)
     try:
-        interval = int(input("\nIntervalo de verificación (1-3600s): "))
-        if not (1 <= interval <= 3600):
-            raise ValueError
+        interval = input("\nIntervalo de verificación (1-3600s, Enter=10): ")
+        if interval.strip() == "":
+            interval = 10
+        else:
+            interval = int(interval)
+            if not (1 <= interval <= 3600):
+                raise ValueError
     except ValueError:
         print("Intervalo inválido. Usando 10s por defecto.")
         interval = 10

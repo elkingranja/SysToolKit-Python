@@ -69,40 +69,69 @@ def resumen_linux():
         print("\nNo se encontró un gestor de paquetes compatible.")
 
 def resumen_windows():
-    print("\nDetectando sistema operativo...")
-    print("Sistema operativo detectado: Windows")
-
+    resumen = []
+    resumen.append("\n" + "="*40)
+    resumen.append("RESUMEN DE SEGURIDAD PARA WINDOWS")
+    resumen.append("="*40)
+    resumen.append("\n[Usuarios en el sistema]")
+    resumen.append("Esta sección muestra las cuentas locales configuradas en tu equipo.\n")
     try:
         if shutil.which("query"):
             out, err, code = run_cmd("query user", shell=True)
-            print("\nUsuarios conectados:")
-            print(out or "(ninguno)")
+            resumen.append("Usuarios conectados actualmente:")
+            resumen.append(out or "(ninguno)")
         else:
-            print("\nEl comando 'query user' no está disponible en este sistema.")
-            print("\nPara ver intentos de acceso fallidos:")
-            print("1. Presione 'Win + S' y busque 'Visor de eventos'.")
-            print("2. Abra el Visor de eventos.")
-            print("3. Navegue a 'Registros de Windows' > 'Seguridad'.")
-            print("4. Busque eventos relacionados con intentos de inicio de sesión fallidos.")
+            if shutil.which("net"):
+                out, err, code = run_cmd("net user", shell=True)
+                resumen.append("Cuentas de usuario locales:")
+                resumen.append(out or "(ninguna)")
+                # Advertencia si 'Invitado' está habilitado
+                if "Invitado" in out and "Cuenta deshabilitada" not in out:
+                    resumen.append("\n[!] Advertencia: La cuenta 'Invitado' está presente. Se recomienda deshabilitarla si no se usa.")
+            else:
+                resumen.append("No se pudo obtener la lista de usuarios.")
+        resumen.append("\n[Intentos de acceso fallidos]")
+        resumen.append("Para ver los intentos de acceso fallidos, sigue estos pasos:")
+        resumen.append("1. Presiona 'Win + S' y busca 'Visor de eventos'.")
+        resumen.append("2. Abre el Visor de eventos.")
+        resumen.append("3. Navega a 'Registros de Windows' > 'Seguridad'.")
+        resumen.append("4. Busca eventos relacionados con intentos de inicio de sesión fallidos.")
     except Exception as e:
-        print(f"\nError inesperado en resumen_windows: {e}")
+        resumen.append(f"\nError inesperado en resumen_windows: {e}")
+    resumen.append("\n" + "="*40)
+    resumen.append("Fin del resumen de seguridad.")
+    resumen.append("="*40)
+    return "\n".join(resumen)
 
 def security_summary(sistema_operativo):
     print("\nRESUMEN DE SEGURIDAD")
     print(f"\nSistema operativo: {platform.system()} {platform.release()}")
     print(f"Fecha y hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
+    resumen = ""
     if sistema_operativo == "linux":
         resumen_linux()
     elif sistema_operativo == "windows":
-        resumen_windows()
+        resumen = resumen_windows()
+        print(resumen)
     else:
         print(f"\nEl sistema operativo '{sistema_operativo}' no es compatible con este módulo.")
+        return
+
+    # Opción para guardar el resumen
+    if resumen:
+        guardar = input("\n¿Desea guardar este resumen en un archivo? (s/n): ").strip().lower()
+        if guardar == "s":
+            nombre = input("Nombre del archivo (ej: resumen_seguridad.txt): ").strip() or "resumen_seguridad.txt"
+            try:
+                with open(nombre, "w", encoding="utf-8") as f:
+                    f.write(resumen)
+                print(f"Resumen guardado en '{nombre}'.")
+            except Exception as e:
+                print(f"Error al guardar el archivo: {e}")
 
 if __name__ == "__main__":
     sistema_operativo = platform.system().lower()
     security_summary(sistema_operativo)
-
     input("\nPresiona Enter para volver al menú...")
     # Este módulo proporciona un resumen de la seguridad del sistema operativo, incluyendo usuarios conectados y actualizaciones pendientes.
     # Se ejecuta automáticamente al iniciar el programa principal.

@@ -2,7 +2,6 @@
 import os
 import sys
 import platform
-import subprocess
 
 # Asegurar soporte UTF-8 en Windows
 if sys.platform == "win32":
@@ -12,7 +11,18 @@ if sys.platform == "win32":
     except AttributeError:
         print("Advertencia: No se pudo reconfigurar la salida a UTF-8.")
 
-# Función para establecer permisos de ejecución en Linux
+# Verifica que la carpeta modules y subcarpetas existan
+def verificar_estructura():
+    carpetas = [
+        "modules/monitor", "modules/backup", "modules/alertas",
+        "modules/seguridad", "modules/users", "modules/automation",
+        "modules/logs", "modules/tools"
+    ]
+    for carpeta in carpetas:
+        if not os.path.isdir(carpeta):
+            print(f"Advertencia: Falta la carpeta '{carpeta}'.")
+
+# Establecer permisos de ejecución en Linux
 def set_permissions():
     if platform.system() != "Linux":
         print("Advertencia: La función 'set_permissions' solo es aplicable en Linux.")
@@ -21,65 +31,22 @@ def set_permissions():
         for file in files:
             if file.endswith(".py"):
                 path = os.path.join(root, file)
-                os.chmod(path, 0o755)
+                try:
+                    os.chmod(path, 0o755)
+                except Exception as e:
+                    print(f"Error al cambiar permisos de {path}: {e}")
 
-# Ejecutar un módulo mediante subprocess para manejar errores
+# Ejecutar un módulo y mostrar errores si ocurren
 def ejecutar_modulo(path):
     if not os.path.isfile(path):
         print(f"ERROR: Módulo no encontrado: {path}")
         return
-    # Llamada con os.system para que el módulo reciba stdin normalmente
-    retorno = os.system(f'python "{path}"')
-    if retorno != 0:
-        print(f"ERROR al ejecutar {path}, código de salida: {retorno}")
-
-# Validar rutas de módulos
-def validar_rutas():
-    for categoria, rutas in CATEGORIAS.items():
-        for ruta in rutas:
-            if not os.path.isfile(ruta):
-                print(f"Advertencia: La ruta {ruta} no existe.")
-
-# Mostrar menú principal con categorías y descripciones
-def mostrar_menu():
-    print("\n=== SysToolKit - Menú Principal ===")
-    print("Seleccione una categoría:")
-    print("1. Monitoreo del sistema")
-    print("   - system_monitor.py: Monitorea CPU, RAM y disco")
-    print("   - network_toolkit.py: Herramientas de red y escaneo de puertos")
-    print("   - sys_summary.py: Resumen completo del sistema")
-    print("2. Copias de seguridad y restauración")
-    print("   - backup_creator.py: Crear copias de seguridad")
-    print("   - restore_backup.py: Restaurar copias")
-    print("   - auto_backup.py: Respaldos automáticos programados")
-    print("   - usb_backup.py: Copia automática al conectar USB")
-    print("3. Alertas y notificaciones")
-    print("   - custom_alert.py: Alertas por CPU, RAM o disco")
-    print("   - usb_alert_config.py: Alertas por conexión USB")
-    print("   - critical_file_watcher.py: Monitoreo de archivos críticos")
-    print("   - disk_health_alert.py: Estado SMART del disco (Linux)")
-    print("   - user_inactivity_notifier.py: Usuarios inactivos (Linux)")
-    print("   - process_alert.py: Monitoreo de procesos")
-    print("4. Seguridad y permisos")
-    print("   - rootkit_permission_scan.py: Detección de rootkits y permisos inseguros")
-    print("   - user_monitor.py: Usuarios conectados en tiempo real")
-    print("   - auth_fail_monitor.py: Fallos de autenticación (Linux)")
-    print("   - security_summary.py: Informe de seguridad del sistema")
-    print("   - permission_checker.py: Permisos peligrosos en archivos")
-    print("5. Gestión de usuarios")
-    print("   - user_creator.py: Crear usuarios (Linux)")
-    print("   - user_lister.py: Listar usuarios existentes")
-    print("   - user_cleaner.py: Limpiar usuarios inactivos (Linux)")
-    print("   - user_groups.py: Consultar grupos de usuario")
-    print("6. Automatización del sistema")
-    print("   - startup_manager.py: Programas al inicio del sistema")
-    print("   - auto_update_checker.py: Verificar/instalar actualizaciones")
-    print("   - scheduled_task_helper.py: Asistente para tareas programadas")
-    print("7. Logs")
-    print("   - log_manager.py: Visualización y limpieza de logs del sistema")
-    print("8. Herramientas de productividad")
-    print("   - file_tools.py: Conversión y manipulación de archivos")
-    print("0. Salir")
+    try:
+        retorno = os.system(f'python "{path}"')
+        if retorno != 0:
+            print(f"ERROR al ejecutar {path}, código de salida: {retorno}")
+    except Exception as e:
+        print(f"Excepción al ejecutar el módulo: {e}")
 
 # Diccionario con rutas por categoría
 CATEGORIAS = {
@@ -128,14 +95,39 @@ CATEGORIAS = {
     ]
 }
 
-# Ejecución del menú
+# Filtra los módulos existentes para mostrar solo los que están presentes
+def obtener_modulos_existentes(rutas):
+    existentes = []
+    for ruta in rutas:
+        if os.path.isfile(ruta):
+            existentes.append(ruta)
+        else:
+            print(f"Advertencia: El módulo '{ruta}' no existe y no será mostrado.")
+    return existentes
+
+# Mostrar menú principal
+def mostrar_menu():
+    print("\n=== SysToolKit - Menú Principal ===")
+    print("Seleccione una categoría:")
+    print("1. Monitoreo del sistema")
+    print("2. Copias de seguridad y restauración")
+    print("3. Alertas y notificaciones")
+    print("4. Seguridad y permisos")
+    print("5. Gestión de usuarios")
+    print("6. Automatización del sistema")
+    print("7. Logs")
+    print("8. Herramientas de productividad")
+    print("0. Salir")
+    print("Escriba 'volver' en cualquier momento para regresar al menú principal.")
+
+# Ejecución del menú principal
 def main():
+    verificar_estructura()
     set_permissions()
-    validar_rutas()
     while True:
         mostrar_menu()
-        opcion = input("\nIngrese el número de categoría: ").strip()
-        if opcion == "0":
+        opcion = input("\nIngrese el número de categoría: ").strip().lower()
+        if opcion == "0" or opcion == "volver":
             print("Saliendo del programa.")
             break
 
@@ -144,26 +136,29 @@ def main():
             print("Opción no válida.")
             continue
 
+        modulos_disponibles = obtener_modulos_existentes(rutas)
+        if not modulos_disponibles:
+            print("No hay módulos disponibles en esta categoría.")
+            continue
+
         # Submenú de módulos para la categoría seleccionada
         while True:
             print(f"\nMódulos en categoría {opcion}:")
-            for i, ruta in enumerate(rutas, 1):
+            for i, ruta in enumerate(modulos_disponibles, 1):
                 print(f"  {i}. {os.path.basename(ruta)}")
             print("  0. Volver al menú principal")
+            print("  Escriba 'volver' para regresar al menú principal")
 
-            sel = input("Seleccione módulo: ").strip()
-            if sel == "0":
+            sel = input("Seleccione módulo: ").strip().lower()
+            if sel == "0" or sel == "volver":
                 break
-            if not sel.isdigit() or not (1 <= int(sel) <= len(rutas)):
+            if not sel.isdigit() or not (1 <= int(sel) <= len(modulos_disponibles)):
                 print("Selección inválida.")
                 continue
 
             # Ejecutar el módulo elegido
-            try:
-                ruta_elegida = rutas[int(sel) - 1]
-                ejecutar_modulo(ruta_elegida)
-            except IndexError:
-                print("Error: índice fuera de rango. Intente nuevamente.")
+            ruta_elegida = modulos_disponibles[int(sel) - 1]
+            ejecutar_modulo(ruta_elegida)
 
 if __name__ == "__main__":
     main()

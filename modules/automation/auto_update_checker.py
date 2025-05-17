@@ -12,6 +12,7 @@ import sys
 import os
 import ctypes
 import shutil
+import argparse
 
 def configurar_utf8():
     if sys.platform == "win32":
@@ -35,30 +36,24 @@ def es_administrador():
         return os.geteuid() == 0
 
 def verificar_actualizaciones_linux():
-    print("Verificando actualizaciones en Linux...\n")
     try:
         if shutil.which("apt"):
             resultado = subprocess.check_output(["apt", "list", "--upgradable"], stderr=subprocess.DEVNULL, text=True)
-            lineas = resultado.splitlines()[1:]  # Ignora la primera línea
-            if lineas:
-                print("\n".join(lineas))
-                return True
-            else:
-                print("El sistema ya está actualizado.")
-                return False
+            lineas = resultado.splitlines()[1:]
+            return lineas if lineas else []
         elif shutil.which("dnf"):
             resultado = subprocess.check_output(["dnf", "check-update"], stderr=subprocess.DEVNULL, text=True)
-            print(resultado)
-            return "No packages marked for update" not in resultado
+            return resultado.splitlines() if "No packages marked for update" not in resultado else []
+        elif shutil.which("yum"):
+            resultado = subprocess.check_output(["yum", "check-update"], stderr=subprocess.DEVNULL, text=True)
+            return resultado.splitlines() if resultado else []
+        elif shutil.which("zypper"):
+            resultado = subprocess.check_output(["zypper", "list-updates"], stderr=subprocess.DEVNULL, text=True)
+            return resultado.splitlines()[2:] if resultado else []
         else:
-            print("No se encontró un gestor de paquetes compatible (apt o dnf).")
-            return False
-    except subprocess.CalledProcessError as e:
-        print("Error al verificar actualizaciones:", e)
-        return False
+            return None  # No gestor compatible
     except Exception as e:
-        print("Error general:", e)
-        return False
+        return f"Error: {e}"
 
 def instalar_actualizaciones_linux():
     print("\nInstalando actualizaciones...\n")
@@ -68,6 +63,11 @@ def instalar_actualizaciones_linux():
             subprocess.run(["sudo", "apt", "upgrade", "-y"])
         elif shutil.which("dnf"):
             subprocess.run(["sudo", "dnf", "upgrade", "-y"])
+        elif shutil.which("yum"):
+            subprocess.run(["sudo", "yum", "update", "-y"])
+        elif shutil.which("zypper"):
+            subprocess.run(["sudo", "zypper", "refresh"])
+            subprocess.run(["sudo", "zypper", "update", "-y"])
         else:
             print("No se encontró un gestor de paquetes compatible para instalar actualizaciones.")
             return
@@ -94,37 +94,67 @@ def verificar_actualizaciones_windows():
         print("No se pudo verificar actualizaciones en Windows (requiere versión Pro o superior).")
         print("Detalle:", e)
 
-def auto_update_checker():
+def mostrar_resultados(actualizaciones):
+    if isinstance(actualizaciones, str):
+        print(actualizaciones)
+    elif actualizaciones is None:
+        print("No se encontró un gestor de paquetes compatible.")
+    elif actualizaciones:
+        print("Actualizaciones disponibles:\n")
+        print("\n".join(actualizaciones))
+    else:
+        print("El sistema ya está actualizado.")
+
+def auto_update_checker(auto_install=False, no_pause=False):
     configurar_utf8()
     print("=== VERIFICADOR DE ACTUALIZACIONES ===\n")
     sistema = platform.system()
 
     if sistema == "Linux":
         hay_actualizaciones = verificar_actualizaciones_linux()
+        mostrar_resultados(hay_actualizaciones)
         if hay_actualizaciones:
-            while True:
-                opcion = input("\n¿Deseas instalar las actualizaciones ahora? (s/n): ").strip().lower()
-                if opcion in ["s", "n"]:
-                    break
-                print("Entrada no válida. Por favor, ingresa 's' para sí o 'n' para no.")
-            if opcion == "s":
+            if auto_install:
+                print("\nInstalando actualizaciones automáticamente...\n")
                 instalar_actualizaciones_linux()
             else:
-                print("Actualizaciones no instaladas.")
+                while True:
+                    opcion = input("\n¿Deseas instalar las actualizaciones ahora? (s/n): ").strip().lower()
+                    if opcion in ["s", "n"]:
+                        break
+                    print("Entrada no válida. Por favor, ingresa 's' para sí o 'n' para no.")
+                if opcion == "s":
+                    instalar_actualizaciones_linux()
+                else:
+                    print("Actualizaciones no instaladas.")
     elif sistema == "Windows":
         verificar_actualizaciones_windows()
         print("Nota: la instalación automática no es compatible en esta versión.")
     else:
         print("Sistema operativo no compatible.")
 
-    input("\nPresiona Enter para volver al menú...")
+    if not no_pause:
+        input("\nPresiona Enter para volver al menú...")
 
-if __name__ == "__main__":
+def main():
+    parser = argparse.ArgumentParser(description="Verifica e instala actualizaciones del sistema.")
+    parser.add_argument('--auto', action='store_true', help='Instala actualizaciones automáticamente si hay.')
+    parser.add_argument('--no-pause', action='store_true', help='No esperar input al finalizar.')
+    args = parser.parse_args()
+
     if not es_administrador():
         print("Este script requiere permisos de administrador para ejecutarse.")
-        sys.exit(1)
-    auto_update_checker()
-    
+        input("Presiona Enter para salir...")
+    else:
+        try:
+            auto_update_checker(args.auto, args.no_pause)
+        except Exception as e:
+            print(f"Error crítico: {e}")
+
 if __name__ == "__main__":
-    input("\nPresiona Enter para volver al menú...")
+    try:
+        main()
+        sys.exit(0)
+    except Exception:
+        sys.exit(1)
 

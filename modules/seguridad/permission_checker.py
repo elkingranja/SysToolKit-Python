@@ -27,18 +27,18 @@ def run_command(cmd):
     except Exception as e:
         return "", str(e), 1
 
-def revisar_linux():
+def revisar_linux(ruta=None, limite=10):
     print("Permisos inseguros en Linux:\n")
 
     for desc, cmd in [
-        ("Archivos con permisos 777", ["find", "/", "-type", "f", "-perm", "0777"]),
-        ("Archivos con SUID",      ["find", "/", "-type", "f", "-perm", "-4000"]),
-        ("Archivos con SGID",      ["find", "/", "-type", "f", "-perm", "-2000"])
+        ("Archivos con permisos 777", ["find", ruta or "/", "-type", "f", "-perm", "0777"]),
+        ("Archivos con SUID",      ["find", ruta or "/", "-type", "f", "-perm", "-4000"]),
+        ("Archivos con SGID",      ["find", ruta or "/", "-type", "f", "-perm", "-2000"])
     ]:
         print(f"== {desc} ==")
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, stderr=subprocess.DEVNULL)
-            lines = result.stdout.strip().split("\n")[:10]  # Limitar a 10 resultados
+            lines = result.stdout.strip().split("\n")[:limite]  # Limitar a 'limite' resultados
             if lines:
                 print("\n".join(lines))
             else:
@@ -56,18 +56,29 @@ def es_administrador():
     except:
         return False
 
-def revisar_windows():
+def revisar_windows(ruta=None, limite=10, completo=False):
     print("Revisión de permisos en Windows:\n")
     es_admin = es_administrador()
     if not es_admin:
         print("Advertencia: No estás ejecutando el script como administrador. Algunos archivos pueden ser ignorados.\n")
 
-    carpetas = [
-        r"C:\Users\Public",
-        r"C:\ProgramData",
-        r"C:\Temp"
-    ]
+    if completo or not ruta:
+        carpetas = [
+            r"C:\Users\Public",
+            r"C:\ProgramData",
+            r"C:\Temp",
+            r"C:\\",  # Disco raíz
+            r"C:\Windows",
+            r"C:\Program Files",
+            r"C:\Program Files (x86)"
+        ]
+    else:
+        carpetas = [ruta]
+
     archivos_excluidos = ["McInst.exe"]
+    revisados = 0
+    encontrados = 0
+    resultados = []
     for carpeta in carpetas:
         if not os.path.isdir(carpeta):
             continue
@@ -75,39 +86,63 @@ def revisar_windows():
         for root, _, files in os.walk(carpeta):
             for file in files:
                 if file.lower().endswith(('.exe', '.bat', '.ps1')):
-                    ruta = os.path.join(root, file)
-                    if os.path.basename(ruta) in archivos_excluidos:
-                        print(f"Ignorando archivo excluido: {ruta} (archivo conocido o seguro)")
+                    ruta_archivo = os.path.join(root, file)
+                    revisados += 1
+                    if os.path.basename(ruta_archivo) in archivos_excluidos:
+                        print(f"Ignorando archivo excluido: {ruta_archivo} (archivo conocido o seguro)")
                         continue
-                    cmd = f'icacls "{ruta}"'
+                    cmd = f'icacls "{ruta_archivo}"'
                     out, err, code = run_command(cmd)
                     if code != 0 or not out:
-                        razon = "requiere permisos elevados" if not es_admin else "no se pudo verificar permisos"
-                        print(f"Ignorando archivo: {ruta} ({razon})")
-                        if err:
-                            print(f"Detalles del error: {err}")
                         continue
                     if "Everyone:(F)" in out:
-                        print(f"PERMISO TOTAL para Everyone: {ruta}")
+                        mensaje = f"PERMISO TOTAL para Everyone: {ruta_archivo}"
+                        print(mensaje)
+                        resultados.append(mensaje)
+                        encontrados += 1
+                        if limite and encontrados >= limite:
+                            break
+            if limite and encontrados >= limite:
+                break
         print()
+    print(f"Archivos revisados: {revisados}")
+    print(f"Archivos con permisos peligrosos encontrados: {encontrados}")
+    return resultados
 
-def permission_checker():
+def main():
     print("=== Verificador de Permisos Peligrosos ===\n")
     sistema = platform.system()
 
     if sistema == "Linux":
         print(">>> Escaneando sistema Linux...\n")
-        revisar_linux()
+        ruta = input("¿Ruta específica a revisar? (deja vacío para todo el sistema): ").strip() or None
+        try:
+            limite = int(input("¿Cuántos resultados máximos mostrar por tipo? [10]: ") or "10")
+        except ValueError:
+            limite = 10
+        revisar_linux(ruta=ruta, limite=limite)
     elif sistema == "Windows":
         print(">>> Escaneando sistema Windows...\n")
-        revisar_windows()
+        eleccion = input("¿Quieres una revisión completa? (s/n): ").strip().lower()
+        if eleccion == "s":
+            completo = True
+            ruta = None
+        else:
+            completo = False
+            ruta = input("Introduce la ruta a revisar: ").strip()
+            if not ruta:
+                print("No se indicó ruta. Saliendo.")
+                return
+        try:
+            limite = int(input("¿Cuántos resultados máximos mostrar? [10]: ") or "10")
+        except ValueError:
+            limite = 10
+        revisar_windows(ruta=ruta, limite=limite, completo=completo)
     else:
         print("Sistema operativo no compatible.")
 
-    input("\nPresione Enter para terminar...")
-
 if __name__ == "__main__":
-    permission_checker()
+    main()
     input("\nPresiona Enter para volver al menú...")
     # Este script verifica permisos inseguros en sistemas Linux y Windows.
     # En Linux, busca archivos con permisos 777, SUID y SGID.

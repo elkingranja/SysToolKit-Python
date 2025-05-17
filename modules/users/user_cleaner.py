@@ -48,6 +48,7 @@ def user_cleaner():
     input("\nPresione Enter para volver al menú...")
 
 if __name__ == "__main__":
+    user_cleaner()
     input("\nPresiona Enter para volver al menú...")
     # El código se ejecuta directamente si se llama a este script
     # desde la línea de comandos. Si se importa como un módulo, no se ejecutará.

@@ -110,6 +110,55 @@ def extracttxt(src, dst):
     except Exception as e:
         print(f"[ERROR] extracttxt: {e}")
 
+def limpiar_ruta(ruta):
+    return ruta.strip().strip('"').strip("'")
+
+def menu_interactivo():
+    print("=== SysToolKit - Conversor de Archivos ===")
+    print("1. TXT a PDF")
+    print("2. DOCX a PDF")
+    print("3. PDF a DOCX")
+    print("4. Unir PDFs")
+    print("5. Dividir PDF")
+    print("6. Convertir imagen")
+    print("7. Extraer texto de PDF")
+    print("0. Salir")
+    opcion = input("Selecciona una opción: ").strip()
+    if opcion == "1":
+        src = limpiar_ruta(input("Archivo .txt de origen: "))
+        dst = limpiar_ruta(input("Archivo .pdf de salida: "))
+        return ["txt2pdf", src, dst]
+    elif opcion == "2":
+        src = limpiar_ruta(input("Archivo .docx de origen: "))
+        return ["docx2pdf", src]
+    elif opcion == "3":
+        src = limpiar_ruta(input("Archivo .pdf de origen: "))
+        dst = limpiar_ruta(input("Archivo .docx de salida: "))
+        return ["pdf2docx", src, dst]
+    elif opcion == "4":
+        output = limpiar_ruta(input("Archivo PDF de salida: "))
+        inputs = [limpiar_ruta(x) for x in input("Archivos PDF a combinar (separados por espacio): ").strip().split()]
+        return ["mergepdf", output] + inputs
+    elif opcion == "5":
+        src = limpiar_ruta(input("PDF de origen: "))
+        pages = input("Rangos de páginas (ejemplo: 1-3,5): ").strip()
+        prefix = limpiar_ruta(input("Prefijo del archivo generado (opcional): "))
+        args = ["splitpdf", src, pages]
+        if prefix:
+            args += ["--prefix", prefix]
+        return args
+    elif opcion == "6":
+        src = limpiar_ruta(input("Imagen de origen: "))
+        dst = limpiar_ruta(input("Archivo de imagen convertido (ejemplo: salida.png): "))
+        return ["imgconvert", src, dst]
+    elif opcion == "7":
+        src = limpiar_ruta(input("PDF de origen: "))
+        dst = limpiar_ruta(input("Archivo .txt de salida: "))
+        return ["extracttxt", src, dst]
+    else:
+        print("Saliendo...")
+        sys.exit(0)
+
 def main():
     parser = argparse.ArgumentParser(
         prog="file_tools",
@@ -146,26 +195,46 @@ def main():
     p.add_argument("src", help="PDF de origen")
     p.add_argument("dst", help="Archivo .txt de salida")
 
-    args = parser.parse_args()
-
-    # Mapa de comandos
     commands = {
-        "txt2pdf": lambda: txt2pdf(args.src, args.dst),
-        "docx2pdf": lambda: docx2pdf(args.src),
-        "pdf2docx": lambda: pdf2docx(args.src, args.dst),
-        "mergepdf": lambda: mergepdf(args.output, args.inputs),
-        "splitpdf": lambda: splitpdf(args.src, args.pages, args.prefix),
-        "imgconvert": lambda: imgconvert(args.src, args.dst),
-        "extracttxt": lambda: extracttxt(args.src, args.dst),
+        "txt2pdf": lambda args: txt2pdf(args.src, args.dst),
+        "docx2pdf": lambda args: docx2pdf(args.src),
+        "pdf2docx": lambda args: pdf2docx(args.src, args.dst),
+        "mergepdf": lambda args: mergepdf(args.output, args.inputs),
+        "splitpdf": lambda args: splitpdf(args.src, args.pages, args.prefix),
+        "imgconvert": lambda args: imgconvert(args.src, args.dst),
+        "extracttxt": lambda args: extracttxt(args.src, args.dst),
     }
 
-    try:
-        commands[args.cmd]()
-    except KeyError:
-        print(f"[ERROR] Comando no reconocido: {args.cmd}")
-    except Exception as e:
-        print(f"[ERROR] Fallo al ejecutar el comando '{args.cmd}': {e}")
+    # Bucle principal del menú
+    while True:
+        try:
+            # Si no hay argumentos, muestra menú interactivo
+            if len(sys.argv) == 1:
+                menu_args = menu_interactivo()
+                if menu_args[0] == "salir":
+                    print("¡Hasta luego!")
+                    break
+                args = parser.parse_args(menu_args)
+            else:
+                args = parser.parse_args()
+        except SystemExit as e:
+            if e.code == 2:
+                print("\n[ERROR] Debes especificar un comando. Usa --help para ver las opciones disponibles.")
+                continue
+            raise
+
+        try:
+            commands[args.cmd](args)
+        except KeyError:
+            print(f"[ERROR] Comando no reconocido: {args.cmd}")
+        except Exception as e:
+            print(f"[ERROR] Fallo al ejecutar el comando '{args.cmd}': {e}")
+
+        # Preguntar si quiere volver al menú o salir
+        opcion = input("\n¿Deseas realizar otra operación? (s = sí, cualquier otra tecla = salir): ").strip().lower()
+        if opcion != "s":
+            print("¡Hasta luego!")
+            break
 
 if __name__ == "__main__":
     main()
-    input("\nPresiona Enter para volver al menú...")

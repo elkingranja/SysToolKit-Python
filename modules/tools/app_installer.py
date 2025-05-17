@@ -49,27 +49,73 @@ def install_linux(apps, manager):
 
 def install_windows(apps):
     for app in apps:
+        # Buscar el identificador usando winget search
         try:
-            subprocess.run(["winget", "install", "--silent", "--accept-source-agreements",
-                            "--accept-package-agreements", "--id", app], check=True)
-            print(f"[OK] Aplicación instalada: {app}")
+            result = subprocess.run(
+                ["winget", "search", "--name", app],
+                capture_output=True, text=True, check=True
+            )
+            lines = result.stdout.splitlines()
+            # Buscar líneas que tengan identificador (ID)
+            opciones = []
+            for line in lines:
+                if "Id" in line and "Name" in line:
+                    continue  # Saltar encabezado
+                parts = line.split()
+                if len(parts) >= 2:
+                    opciones.append((parts[0], " ".join(parts[1:])))
+            if not opciones:
+                print(f"[ERROR] No se encontró ningún paquete para: {app}")
+                continue
+            # Si hay varias opciones, mostrar y pedir al usuario
+            if len(opciones) > 1:
+                print(f"Se encontraron varias opciones para '{app}':")
+                for idx, (id_, name) in enumerate(opciones, 1):
+                    print(f"{idx}. {name} ({id_})")
+                print("0. No instalar ninguna de estas opciones")
+                seleccion = input("Elige el número de la aplicación a instalar (o 0 para cancelar): ").strip()
+                try:
+                    seleccion = int(seleccion)
+                    if seleccion == 0:
+                        print(f"[INFO] No se instalará '{app}'.")
+                        continue
+                    seleccion -= 1
+                    app_id = opciones[seleccion][0]
+                except Exception:
+                    print("[ERROR] Selección inválida.")
+                    continue
+            else:
+                app_id = opciones[0][0]
+            # Instalar usando el identificador encontrado
+            subprocess.run([
+                "winget", "install", "--silent", "--accept-source-agreements",
+                "--accept-package-agreements", "--id", app_id
+            ], check=True)
+            print(f"[OK] Aplicación instalada: {app_id}")
         except subprocess.CalledProcessError:
             print(f"[ERROR] No se pudo instalar: {app}")
 
 def main():
     parser = argparse.ArgumentParser(
         prog="app_installer",
-        description=DESCRIPTION,
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        description="Instala una o varias aplicaciones usando el gestor de paquetes disponible:\n  * Linux: apt, dnf, pacman\n  * Windows: winget",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        add_help=False
     )
-    parser.add_argument("apps", nargs="+", help="Aplicaciones a instalar")
+    parser.add_argument("apps", nargs="*", help="Aplicaciones a instalar")  # Cambia + por *
+    parser.add_argument("-h", "--help", action="help", default=argparse.SUPPRESS,
+                        help="Muestra este mensaje de ayuda y sale")
 
     args = parser.parse_args()
     apps = args.apps
 
+    # Si no se pasan apps por argumento, preguntar al usuario
     if not apps:
-        print("[ERROR] No se proporcionaron aplicaciones para instalar.")
-        sys.exit(1)
+        entrada = input("¿Qué aplicación(es) deseas instalar? (separa por espacios): ").strip()
+        if not entrada:
+            print("[ERROR] No se proporcionaron aplicaciones para instalar.")
+            sys.exit(1)
+        apps = entrada.split()
 
     sistema = sys.platform
 
@@ -103,3 +149,4 @@ def main():
 if __name__ == "__main__":
     main()
     input("\nPresiona Enter para volver al menú...")
+

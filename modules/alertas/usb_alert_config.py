@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
 import sys
-import io
 import time
 import platform
 import psutil
 import os
 
-# Configurar salida estándar para UTF-8
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+try:
+    from colorama import init, Fore, Style
+    init(autoreset=True)
+except ImportError:
+    class Fore:
+        GREEN = ''
+        RED = ''
+        YELLOW = ''
+        CYAN = ''
+    class Style:
+        RESET_ALL = ''
 
 def obtener_unidades():
     sistema = platform.system()
@@ -21,39 +29,59 @@ def obtener_unidades():
                 if "/media" in p.mountpoint or "/run/media" in p.mountpoint:
                     unidades[p.device] = p.mountpoint
     except Exception as e:
-        print(f"Advertencia: Error al obtener las unidades: {e}")
+        print(f"{Fore.YELLOW}Advertencia: Error al obtener las unidades: {e}{Style.RESET_ALL}")
     return unidades
 
+def mostrar_ayuda():
+    print(f"""{Fore.CYAN}
+=== AYUDA USB ALERT ===
+- Este módulo monitorea la conexión y desconexión de dispositivos USB.
+- Puedes definir el intervalo de verificación.
+- Presiona Ctrl+C para salir en cualquier momento.
+- Se notificará tanto la conexión como la desconexión de unidades.
+========================={Style.RESET_ALL}
+""")
+
 def usb_alert_config():
-    print("=== ALERTA POR CONEXIÓN DE USB ===\n")
+    print(f"{Fore.CYAN}=== ALERTA POR CONEXIÓN/DESCONEXIÓN DE USB ==={Style.RESET_ALL}\n")
+    if any(arg in ['-h', '--help', 'help'] for arg in sys.argv):
+        mostrar_ayuda()
+        return
     try:
         intervalo = int(input("Intervalo de verificación en segundos (default 5): ").strip() or 5)
         if intervalo <= 0:
-            print("Advertencia: El intervalo debe ser un número positivo. Usando el valor por defecto de 5 segundos.")
+            print(f"{Fore.YELLOW}Advertencia: El intervalo debe ser un número positivo. Usando 5 segundos.{Style.RESET_ALL}")
             intervalo = 5
     except ValueError:
-        print("Advertencia: Entrada no válida. Usando el valor por defecto de 5 segundos.")
+        print(f"{Fore.YELLOW}Advertencia: Entrada no válida. Usando 5 segundos.{Style.RESET_ALL}")
         intervalo = 5
 
     anteriores = obtener_unidades()
-    print("Monitoreando... (Ctrl+C para salir)\n")
+    print(f"{Fore.GREEN}Unidades conectadas al iniciar:{Style.RESET_ALL}")
+    if anteriores:
+        for dev, punto in anteriores.items():
+            print(f" - {dev} en {punto}")
+    else:
+        print(" (Ninguna unidad USB detectada)")
+    print(f"\n{Fore.YELLOW}Monitoreando... (Ctrl+C para salir){Style.RESET_ALL}\n")
     try:
         while True:
             actuales = obtener_unidades()
             nuevas = {dev: mp for dev, mp in actuales.items() if dev not in anteriores}
-            if nuevas:
-                for dev, punto in nuevas.items():
-                    ruta_limpia = punto.strip("/\\")
-                    etiqueta = os.path.basename(ruta_limpia) or "Desconocida"
-                    print(f"Alerta: Unidad {dev} ({etiqueta}) conectada en {punto}")
+            removidas = {dev: mp for dev, mp in anteriores.items() if dev not in actuales}
+            for dev, punto in nuevas.items():
+                ruta_limpia = punto.strip("/\\")
+                etiqueta = os.path.basename(ruta_limpia) or "Desconocida"
+                print(f"{Fore.GREEN}Alerta: Unidad {dev} ({etiqueta}) conectada en {punto}{Style.RESET_ALL}")
+            for dev, punto in removidas.items():
+                ruta_limpia = punto.strip("/\\")
+                etiqueta = os.path.basename(ruta_limpia) or "Desconocida"
+                print(f"{Fore.RED}Alerta: Unidad {dev} ({etiqueta}) desconectada de {punto}{Style.RESET_ALL}")
             anteriores = actuales
-            time.sleep(max(intervalo, 1))  # Asegura un intervalo mínimo de 1 segundo
+            time.sleep(max(intervalo, 1))
     except KeyboardInterrupt:
-        print("\nMonitoreo detenido por el usuario.")
+        print(f"\n{Fore.CYAN}Monitoreo detenido por el usuario.{Style.RESET_ALL}")
 
 if __name__ == "__main__":
     usb_alert_config()
     input("\nPresiona Enter para volver al menú...")
-    # Este módulo proporciona una herramienta para monitorear la conexión de dispositivos USB en el sistema.
-    # Utiliza la biblioteca psutil para obtener información sobre las unidades conectadas.
-    # La función usb_alert_config() permite al usuario definir un intervalo de verificación y muestra alertas cuando se conecta un nuevo dispositivo USB.

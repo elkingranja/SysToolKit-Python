@@ -102,7 +102,7 @@ def main():
         description=DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    sub = parser.add_subparsers(dest="cmd", required=True)
+    sub = parser.add_subparsers(dest="cmd", required=False)  # Cambia required a False
 
     sub.add_parser("list", help="Listar particiones y uso")
 
@@ -112,6 +112,33 @@ def main():
 
     p = sub.add_parser("duplicates", help="Buscar archivos duplicados en un directorio")
     p.add_argument("path", help="Ruta de carpeta a escanear")
+
+    # Si no hay argumentos, preguntar al usuario
+    if len(sys.argv) == 1:
+        print("¿Qué acción deseas realizar?")
+        print("1. Listar particiones y uso")
+        print("2. Mostrar N carpetas más grandes")
+        print("3. Buscar archivos duplicados en un directorio")
+        opcion = input("Elige una opción (1-3): ").strip()
+        if opcion == "1":
+            list_partitions()
+        elif opcion == "2":
+            ruta = input("Introduce la ruta de la carpeta a analizar: ").strip()
+            if not validate_path(ruta):
+                sys.exit(1)
+            try:
+                n = int(input("¿Cuántas carpetas quieres mostrar? [5]: ").strip() or "5")
+            except ValueError:
+                n = 5
+            top_directories(ruta, n)
+        elif opcion == "3":
+            ruta = input("Introduce la ruta de la carpeta a escanear: ").strip()
+            if not validate_path(ruta):
+                sys.exit(1)
+            find_duplicates(ruta)
+        else:
+            print("Opción no válida.")
+        return
 
     args = parser.parse_args()
 

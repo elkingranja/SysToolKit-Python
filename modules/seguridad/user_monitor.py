@@ -34,19 +34,64 @@ def mostrar_usuarios_linux():
         print(f"Error inesperado al ejecutar 'who': {e}")
 
 def mostrar_usuarios_windows():
-    """Muestra los usuarios conectados en sistemas Windows."""
-    if not comando_disponible("query"):
-        print("El comando 'query user' no está disponible en este sistema.")
-        return
+    """Muestra los usuarios conectados o locales en sistemas Windows."""
+    advertencia = ""
+    resultado = ""
+    resumen_riesgo = ""
+    usuarios_conectados = False
 
-    try:
-        resultado = subprocess.check_output("query user", shell=True, text=True, stderr=subprocess.STDOUT)
-        print(resultado)
-    except subprocess.CalledProcessError as e:
-        print("Este comando requiere Windows Pro o superior o privilegios de administrador.")
-        print("Detalles:", e.output.strip())
-    except Exception as e:
-        print(f"Error inesperado al ejecutar 'query user': {e}")
+    if comando_disponible("query"):
+        print("Mostrando usuarios conectados actualmente:\n")
+        try:
+            resultado = subprocess.check_output("query user", shell=True, text=True, stderr=subprocess.STDOUT)
+            if resultado.strip():
+                print(resultado)
+                usuarios_conectados = True
+            else:
+                print("No hay usuarios conectados actualmente.")
+        except subprocess.CalledProcessError as e:
+            print("Este comando requiere Windows Pro o superior o privilegios de administrador.")
+            print("Detalles:", e.output.strip())
+        except Exception as e:
+            print(f"Error inesperado al ejecutar 'query user': {e}")
+
+    if not usuarios_conectados and comando_disponible("net"):
+        print("\nMostrando todas las cuentas locales con 'net user':\n")
+        try:
+            resultado = subprocess.check_output("net user", shell=True, text=True, stderr=subprocess.STDOUT)
+            print(resultado)
+            if "Invitado" in resultado and "Cuenta deshabilitada" not in resultado:
+                advertencia = "\n[!] Advertencia: La cuenta 'Invitado' está presente. Se recomienda deshabilitarla si no se usa."
+                print(advertencia)
+                resumen_riesgo = "¡Atención! Hay cuentas inseguras activas."
+            else:
+                resumen_riesgo = "No se detectaron cuentas inseguras."
+        except Exception as e:
+            print(f"Error inesperado al ejecutar 'net user': {e}")
+    elif not usuarios_conectados:
+        print("No se pudo obtener la lista de usuarios con 'query user' ni con 'net user'.")
+        resumen_riesgo = "No se pudo analizar el riesgo de cuentas inseguras."
+
+    # Resumen de riesgos
+    if resumen_riesgo:
+        print("\nResumen de seguridad:")
+        print(resumen_riesgo)
+
+    # Opción para guardar el resultado
+    if resultado:
+        guardar = input("\n¿Desea guardar este resultado en un archivo? (s/n): ").strip().lower()
+        if guardar == "s":
+            nombre = input("Nombre del archivo (ej: usuarios.txt): ").strip() or "usuarios.txt"
+            try:
+                with open(nombre, "w", encoding="utf-8") as f:
+                    f.write(resultado)
+                    if advertencia:
+                        f.write(advertencia)
+                    if resumen_riesgo:
+                        f.write("\nResumen de seguridad:\n" + resumen_riesgo)
+                print(f"Resultado guardado en '{nombre}'.")
+            except Exception as e:
+                print(f"Error al guardar el archivo: {e}")
 
 def user_monitor():
     """Función principal para mostrar usuarios conectados según el sistema operativo."""
