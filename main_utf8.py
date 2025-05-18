@@ -95,6 +95,37 @@ CATEGORIAS = {
     ]
 }
 
+# Diccionario de descripciones de módulos
+DESCRIPCIONES = {
+    "modules/monitor/system_monitor.py": "Monitorea el uso de CPU, RAM y disco en tiempo real.",
+    "modules/monitor/network_toolkit.py": "Herramientas para analizar y diagnosticar la red.",
+    "modules/monitor/sys_summary.py": "Resumen general del sistema y sus recursos.",
+    "modules/backup/backup_creator.py": "Crea copias de seguridad de archivos y carpetas.",
+    "modules/backup/restore_backup.py": "Restaura archivos desde una copia de seguridad.",
+    "modules/backup/auto_backup.py": "Automatiza la creación de copias de seguridad.",
+    "modules/backup/usb_backup.py": "Realiza copias de seguridad automáticas en USB.",
+    "modules/alertas/custom_alert.py": "Configura alertas personalizadas del sistema.",
+    "modules/alertas/usb_alert_config.py": "Alerta cuando se conecta un dispositivo USB.",
+    "modules/alertas/critical_file_watcher.py": "Vigila cambios en archivos críticos.",
+    "modules/alertas/disk_health_alert.py": "Alerta sobre el estado de salud del disco.",
+    "modules/alertas/user_inactivity_notifier.py": "Notifica inactividad de usuarios.",
+    "modules/alertas/process_alert.py": "Alerta sobre procesos sospechosos.",
+    "modules/seguridad/rootkit_permission_scan.py": "Escanea rootkits y permisos peligrosos.",
+    "modules/seguridad/user_monitor.py": "Monitorea actividad de usuarios.",
+    "modules/seguridad/auth_fail_monitor.py": "Detecta intentos fallidos de autenticación.",
+    "modules/seguridad/security_summary.py": "Resumen de seguridad del sistema.",
+    "modules/seguridad/permission_checker.py": "Verifica permisos de archivos y carpetas.",
+    "modules/users/user_creator.py": "Crea nuevos usuarios en el sistema.",
+    "modules/users/user_lister.py": "Lista todos los usuarios registrados.",
+    "modules/users/user_cleaner.py": "Elimina usuarios inactivos o innecesarios.",
+    "modules/users/user_groups.py": "Gestiona grupos de usuarios.",
+    "modules/automation/startup_manager.py": "Gestiona programas que inician con el sistema.",
+    "modules/automation/auto_update_checker.py": "Verifica y aplica actualizaciones automáticas.",
+    "modules/automation/scheduled_task_helper.py": "Ayuda a programar tareas automáticas.",
+    "modules/logs/log_manager.py": "Gestiona y visualiza logs del sistema.",
+    "modules/tools/file_tools.py": "Herramientas varias para archivos y documentos."
+}
+
 # Filtra los módulos existentes para mostrar solo los que están presentes
 def obtener_modulos_existentes(rutas):
     existentes = []
@@ -145,7 +176,8 @@ def main():
         while True:
             print(f"\nMódulos en categoría {opcion}:")
             for i, ruta in enumerate(modulos_disponibles, 1):
-                print(f"  {i}. {os.path.basename(ruta)}")
+                descripcion = DESCRIPCIONES.get(ruta, "Sin descripción disponible.")
+                print(f"  {i}. {os.path.basename(ruta)} - {descripcion}")
             print("  0. Volver al menú principal")
             print("  Escriba 'volver' para regresar al menú principal")
 
