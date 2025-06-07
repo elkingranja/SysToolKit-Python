@@ -25,6 +25,12 @@ Unifica conversiones y manipulaciones de archivos:
   * Combinar o dividir PDFs  
   * Convertir imágenes  
   * Extraer texto de PDFs
+
+Ejemplo de uso:
+  file_tools txt2pdf "C:\\mi carpeta\\entrada.txt" "C:\\mi carpeta\\salida.pdf"
+  file_tools mergepdf "C:\\salida.pdf" "C:\\uno.pdf" "C:\\dos.pdf"
+  file_tools extracttxt "C:\\documento.pdf" "C:\\texto extraído.txt"
+Puedes usar rutas con o sin comillas, incluso si contienen espacios.
 """
 
 def txt2pdf(src, dst):
@@ -115,6 +121,7 @@ def limpiar_ruta(ruta):
 
 def menu_interactivo():
     print("=== SysToolKit - Conversor de Archivos ===")
+    print("Puedes escribir rutas con o sin comillas. Ejemplo: \"C:\\mi carpeta\\archivo.pdf\"")
     print("1. TXT a PDF")
     print("2. DOCX a PDF")
     print("3. PDF a DOCX")

@@ -26,12 +26,12 @@ Requirement already satisfied: typing-extensions>=4.9.0 in c:\users\sofja\onedri
 [notice] A new release of pip is available: 24.3.1 -> 25.1.1
 [notice] To update, run: python.exe -m pip install --upgrade pip
 No se pudo encontrar C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_utf8.spec
-799 INFO: PyInstaller: 6.13.0, contrib hooks: 2025.4
-802 INFO: Python: 3.13.2
-896 INFO: Platform: Windows-11-10.0.26100-SP0
-896 INFO: Python environment: c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv
-898 INFO: wrote C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\SysToolKit.spec
-912 INFO: Module search paths (PYTHONPATH):
+1042 INFO: PyInstaller: 6.13.0, contrib hooks: 2025.4
+1044 INFO: Python: 3.13.2
+1161 INFO: Platform: Windows-11-10.0.26100-SP0
+1161 INFO: Python environment: c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv
+1163 INFO: wrote C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\SysToolKit.spec
+1180 INFO: Module search paths (PYTHONPATH):
 ['c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Scripts\\pyinstaller.exe',
  'C:\\Users\\sofja\\AppData\\Local\\Programs\\Python\\Python313\\python313.zip',
  'C:\\Users\\sofja\\AppData\\Local\\Programs\\Python\\Python313\\DLLs',
@@ -41,50 +41,50 @@ No se pudo encontrar C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_ut
  'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages',
  'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\setuptools\\_vendor',
  'C:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit']
-3935 INFO: checking Analysis
-3935 INFO: Building Analysis because Analysis-00.toc is non existent
-3935 INFO: Running Analysis Analysis-00.toc
-3935 INFO: Target bytecode optimization level: 0
-3936 INFO: Initializing module dependency graph...
-3939 INFO: Initializing module graph hook caches...
-4090 INFO: Analyzing modules for base_library.zip ...
-7104 INFO: Processing standard module hook 'hook-encodings.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-10865 INFO: Processing standard module hook 'hook-heapq.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-17197 INFO: Processing standard module hook 'hook-pickle.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-27050 INFO: Caching module dependency graph...
-27157 INFO: Looking for Python shared library...
-27170 INFO: Using Python shared library: C:\Users\sofja\AppData\Local\Programs\Python\Python313\python313.dll
-27170 INFO: Analyzing C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_utf8.py
-27304 INFO: Processing standard module hook 'hook-platform.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-27677 INFO: Processing module hooks (post-graph stage)...
-27693 INFO: Performing binary vs. data reclassification (1 entries)
-27696 INFO: Looking for ctypes DLLs
-27731 INFO: Analyzing run-time hooks ...
-27733 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
-27769 INFO: Creating base_library.zip...
-27975 INFO: Looking for dynamic libraries
-28378 INFO: Extra DLL search directories (AddDllDirectory): []
-28378 INFO: Extra DLL search directories (PATH): []
-28867 INFO: Warnings written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\warn-SysToolKit.txt
-28916 INFO: Graph cross-reference written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\xref-SysToolKit.html
-29082 INFO: checking PYZ
-29083 INFO: Building PYZ because PYZ-00.toc is non existent
-29083 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz
-29734 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz completed successfully.
-29778 INFO: checking PKG
-29778 INFO: Building PKG because PKG-00.toc is non existent
-29778 INFO: Building PKG (CArchive) SysToolKit.pkg
-32934 INFO: Building PKG (CArchive) SysToolKit.pkg completed successfully.
-32938 INFO: Bootloader c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\run.exe
-32938 INFO: checking EXE
-32938 INFO: Building EXE because EXE-00.toc is non existent
-32938 INFO: Building EXE from EXE-00.toc
-32939 INFO: Copying bootloader EXE to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist\SysToolKit.exe
-32965 INFO: Copying icon to EXE
-32998 INFO: Copying 0 resources to EXE
-32998 INFO: Embedding manifest in EXE
-33012 INFO: Appending PKG archive to EXE
-33159 INFO: Fixing EXE headers
-37153 INFO: Building EXE from EXE-00.toc completed successfully.
-37157 INFO: Build complete! The results are available in: C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist
+2802 INFO: checking Analysis
+2802 INFO: Building Analysis because Analysis-00.toc is non existent
+2802 INFO: Running Analysis Analysis-00.toc
+2802 INFO: Target bytecode optimization level: 0
+2802 INFO: Initializing module dependency graph...
+2806 INFO: Initializing module graph hook caches...
+2844 INFO: Analyzing modules for base_library.zip ...
+8230 INFO: Processing standard module hook 'hook-encodings.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+15397 INFO: Processing standard module hook 'hook-pickle.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+20313 INFO: Processing standard module hook 'hook-heapq.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+22030 INFO: Caching module dependency graph...
+22228 INFO: Looking for Python shared library...
+22254 INFO: Using Python shared library: C:\Users\sofja\AppData\Local\Programs\Python\Python313\python313.dll
+22254 INFO: Analyzing C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_utf8.py
+22450 INFO: Processing standard module hook 'hook-platform.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+22732 INFO: Processing module hooks (post-graph stage)...
+22777 INFO: Performing binary vs. data reclassification (1 entries)
+22786 INFO: Looking for ctypes DLLs
+22897 INFO: Analyzing run-time hooks ...
+22908 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+22933 INFO: Creating base_library.zip...
+23229 INFO: Looking for dynamic libraries
+23637 INFO: Extra DLL search directories (AddDllDirectory): []
+23637 INFO: Extra DLL search directories (PATH): []
+24068 INFO: Warnings written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\warn-SysToolKit.txt
+24131 INFO: Graph cross-reference written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\xref-SysToolKit.html
+24218 INFO: checking PYZ
+24218 INFO: Building PYZ because PYZ-00.toc is non existent
+24218 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz
+24869 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz completed successfully.
+24897 INFO: checking PKG
+24897 INFO: Building PKG because PKG-00.toc is non existent
+24897 INFO: Building PKG (CArchive) SysToolKit.pkg
+28777 INFO: Building PKG (CArchive) SysToolKit.pkg completed successfully.
+28781 INFO: Bootloader c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\run.exe
+28783 INFO: checking EXE
+28783 INFO: Building EXE because EXE-00.toc is non existent
+28783 INFO: Building EXE from EXE-00.toc
+28783 INFO: Copying bootloader EXE to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist\SysToolKit.exe
+28814 INFO: Copying icon to EXE
+28837 INFO: Copying 0 resources to EXE
+28838 INFO: Embedding manifest in EXE
+28863 INFO: Appending PKG archive to EXE
+29123 INFO: Fixing EXE headers
+33862 INFO: Building EXE from EXE-00.toc completed successfully.
+33866 INFO: Build complete! The results are available in: C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist
 [OK] Compilación exitosa. 

@@ -22,6 +22,12 @@ Gestión avanzada de disco:
   * list          Listar particiones y uso
   * topdirs       Carpetas más grandes
   * duplicates    Archivos duplicados en un directorio
+
+Ejemplo de uso:
+  disk_manager.py "C:\\mi carpeta\\ "
+  disk_manager.py topdirs "C:\\mi carpeta con espacios\\" --n 10
+  disk_manager.py duplicates "C:\\otra carpeta\\"
+Puedes escribir rutas con o sin comillas. Ejemplo: "C:\\mi carpeta\\"
 """
 
 def format_size(size):
@@ -96,51 +102,66 @@ def find_duplicates(path):
         for fp in files:
             print(f"  {fp}")
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog="disk_manager",
-        description=DESCRIPTION,
-        formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    sub = parser.add_subparsers(dest="cmd", required=False)  # Cambia required a False
+def limpiar_ruta(ruta):
+    return ruta.strip().strip('"').strip("'")
 
-    sub.add_parser("list", help="Listar particiones y uso")
-
-    p = sub.add_parser("topdirs", help="Mostrar N carpetas más grandes")
-    p.add_argument("path", help="Ruta de carpeta a analizar")
-    p.add_argument("--n", type=int, default=5, help="Número de carpetas (por defecto 5)")
-
-    p = sub.add_parser("duplicates", help="Buscar archivos duplicados en un directorio")
-    p.add_argument("path", help="Ruta de carpeta a escanear")
-
-    # Si no hay argumentos, preguntar al usuario
-    if len(sys.argv) == 1:
-        print("¿Qué acción deseas realizar?")
+def menu_interactivo():
+    while True:
+        print("\n¿Qué acción deseas realizar?")
         print("1. Listar particiones y uso")
         print("2. Mostrar N carpetas más grandes")
         print("3. Buscar archivos duplicados en un directorio")
-        opcion = input("Elige una opción (1-3): ").strip()
+        print("0. Volver al menú principal")
+        print('Puedes escribir rutas con o sin comillas. Ejemplo: "C:\\mi carpeta\\carpeta"')
+        opcion = input("Elige una opción (1-3, 0 para salir): ").strip()
         if opcion == "1":
             list_partitions()
         elif opcion == "2":
-            ruta = input("Introduce la ruta de la carpeta a analizar: ").strip()
+            ruta = limpiar_ruta(input("Introduce la ruta de la carpeta a analizar: ").strip())
             if not validate_path(ruta):
-                sys.exit(1)
+                continue
             try:
                 n = int(input("¿Cuántas carpetas quieres mostrar? [5]: ").strip() or "5")
             except ValueError:
                 n = 5
             top_directories(ruta, n)
         elif opcion == "3":
-            ruta = input("Introduce la ruta de la carpeta a escanear: ").strip()
+            ruta = limpiar_ruta(input("Introduce la ruta de la carpeta a escanear: ").strip())
             if not validate_path(ruta):
-                sys.exit(1)
+                continue
             find_duplicates(ruta)
+        elif opcion == "0":
+            break
         else:
             print("Opción no válida.")
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="disk_manager",
+        description=DESCRIPTION,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    sub = parser.add_subparsers(dest="cmd", required=False)
+
+    sub.add_parser("list", help="Listar particiones y uso")
+
+    p = sub.add_parser("topdirs", help="Mostrar N carpetas más grandes")
+    p.add_argument("path", help="Ruta de carpeta a analizar (puedes usar comillas si hay espacios)")
+    p.add_argument("--n", type=int, default=5, help="Número de carpetas (por defecto 5)")
+
+    p = sub.add_parser("duplicates", help="Buscar archivos duplicados en un directorio")
+    p.add_argument("path", help="Ruta de carpeta a escanear (puedes usar comillas si hay espacios)")
+
+    # Si no hay argumentos, mostrar menú interactivo en bucle
+    if len(sys.argv) == 1:
+        menu_interactivo()
         return
 
     args = parser.parse_args()
+
+    # Limpiar rutas también en modo argumentos
+    if hasattr(args, "path"):
+        args.path = limpiar_ruta(args.path)
 
     if args.cmd == "list":
         list_partitions()
@@ -153,4 +174,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    input("\nPresiona Enter para volver al menú...")

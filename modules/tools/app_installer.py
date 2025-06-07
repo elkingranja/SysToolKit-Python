@@ -19,7 +19,15 @@ SysToolKit – app_installer
 Instala una o varias aplicaciones usando el gestor de paquetes disponible:
   * Linux: apt, dnf, pacman
   * Windows: winget
+
+Ejemplo de uso:
+  app_installer.py "C:\\mi carpeta\\lista.txt"
+  app_installer.py 'C:\\otra carpeta\\lista.txt'
+Puedes escribir rutas con o sin comillas. Ejemplo: "C:\\mi carpeta\\archivo.txt"
 """
+
+def limpiar_ruta(ruta):
+    return ruta.strip().strip('"').strip("'")
 
 def detect_linux_package_manager():
     if shutil.which("apt"):
@@ -98,24 +106,23 @@ def install_windows(apps):
 def main():
     parser = argparse.ArgumentParser(
         prog="app_installer",
-        description="Instala una o varias aplicaciones usando el gestor de paquetes disponible:\n  * Linux: apt, dnf, pacman\n  * Windows: winget",
+        description=DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         add_help=False
     )
-    parser.add_argument("apps", nargs="*", help="Aplicaciones a instalar")  # Cambia + por *
+    parser.add_argument("ruta", help='Ruta del archivo de lista de apps (puedes usar comillas si hay espacios)')
     parser.add_argument("-h", "--help", action="help", default=argparse.SUPPRESS,
                         help="Muestra este mensaje de ayuda y sale")
 
     args = parser.parse_args()
-    apps = args.apps
+    ruta = limpiar_ruta(args.ruta)
 
-    # Si no se pasan apps por argumento, preguntar al usuario
-    if not apps:
-        entrada = input("¿Qué aplicación(es) deseas instalar? (separa por espacios): ").strip()
-        if not entrada:
-            print("[ERROR] No se proporcionaron aplicaciones para instalar.")
-            sys.exit(1)
-        apps = entrada.split()
+    # Leer apps desde archivo
+    if not os.path.isfile(ruta):
+        print(f"[ERROR] No se encontró el archivo: {ruta}")
+        sys.exit(1)
+    with open(ruta, encoding="utf-8") as f:
+        apps = [line.strip() for line in f if line.strip()]
 
     sistema = sys.platform
 
@@ -148,5 +155,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    input("\nPresiona Enter para volver al menú...")
 
