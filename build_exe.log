@@ -5,8 +5,7 @@ Requirement already satisfied: fpdf in c:\users\sofja\onedrive\desktop\trabajos\
 Requirement already satisfied: pdf2docx in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from -r requirements.txt (line 3)) (0.5.8)
 Requirement already satisfied: pypdf in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from -r requirements.txt (line 4)) (5.5.0)
 Requirement already satisfied: Pillow in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from -r requirements.txt (line 5)) (11.2.1)
-Collecting pyinstaller (from -r requirements.txt (line 6))
-  Using cached pyinstaller-6.13.0-py3-none-win_amd64.whl.metadata (8.3 kB)
+Requirement already satisfied: pyinstaller in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from -r requirements.txt (line 6)) (6.13.0)
 Requirement already satisfied: colorama in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from -r requirements.txt (line 7)) (0.4.6)
 Requirement already satisfied: PyMuPDF>=1.19.0 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pdf2docx->-r requirements.txt (line 3)) (1.25.5)
 Requirement already satisfied: python-docx>=0.8.10 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pdf2docx->-r requirements.txt (line 3)) (1.1.2)
@@ -14,41 +13,25 @@ Requirement already satisfied: fonttools>=4.24.0 in c:\users\sofja\onedrive\desk
 Requirement already satisfied: numpy>=1.17.2 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pdf2docx->-r requirements.txt (line 3)) (2.2.5)
 Requirement already satisfied: opencv-python-headless>=4.5 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pdf2docx->-r requirements.txt (line 3)) (4.11.0.86)
 Requirement already satisfied: fire>=0.3.0 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pdf2docx->-r requirements.txt (line 3)) (0.7.0)
-Collecting setuptools>=42.0.0 (from pyinstaller->-r requirements.txt (line 6))
-  Downloading setuptools-80.7.1-py3-none-any.whl.metadata (6.6 kB)
-Collecting altgraph (from pyinstaller->-r requirements.txt (line 6))
-  Using cached altgraph-0.17.4-py2.py3-none-any.whl.metadata (7.3 kB)
-Collecting pefile!=2024.8.26,>=2022.5.30 (from pyinstaller->-r requirements.txt (line 6))
-  Using cached pefile-2023.2.7-py3-none-any.whl.metadata (1.4 kB)
-Collecting pywin32-ctypes>=0.2.1 (from pyinstaller->-r requirements.txt (line 6))
-  Using cached pywin32_ctypes-0.2.3-py3-none-any.whl.metadata (3.9 kB)
-Collecting pyinstaller-hooks-contrib>=2025.2 (from pyinstaller->-r requirements.txt (line 6))
-  Using cached pyinstaller_hooks_contrib-2025.4-py3-none-any.whl.metadata (16 kB)
-Collecting packaging>=22.0 (from pyinstaller->-r requirements.txt (line 6))
-  Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+Requirement already satisfied: setuptools>=42.0.0 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pyinstaller->-r requirements.txt (line 6)) (80.7.1)
+Requirement already satisfied: altgraph in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pyinstaller->-r requirements.txt (line 6)) (0.17.4)
+Requirement already satisfied: pefile!=2024.8.26,>=2022.5.30 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pyinstaller->-r requirements.txt (line 6)) (2023.2.7)
+Requirement already satisfied: pywin32-ctypes>=0.2.1 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pyinstaller->-r requirements.txt (line 6)) (0.2.3)
+Requirement already satisfied: pyinstaller-hooks-contrib>=2025.2 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pyinstaller->-r requirements.txt (line 6)) (2025.4)
+Requirement already satisfied: packaging>=22.0 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from pyinstaller->-r requirements.txt (line 6)) (25.0)
 Requirement already satisfied: termcolor in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from fire>=0.3.0->pdf2docx->-r requirements.txt (line 3)) (3.1.0)
 Requirement already satisfied: lxml>=3.1.0 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from python-docx>=0.8.10->pdf2docx->-r requirements.txt (line 3)) (5.4.0)
 Requirement already satisfied: typing-extensions>=4.9.0 in c:\users\sofja\onedrive\desktop\trabajos\systoolkit\.venv\lib\site-packages (from python-docx>=0.8.10->pdf2docx->-r requirements.txt (line 3)) (4.13.2)
-Using cached pyinstaller-6.13.0-py3-none-win_amd64.whl (1.4 MB)
-Using cached packaging-25.0-py3-none-any.whl (66 kB)
-Using cached pefile-2023.2.7-py3-none-any.whl (71 kB)
-Using cached pyinstaller_hooks_contrib-2025.4-py3-none-any.whl (434 kB)
-Using cached pywin32_ctypes-0.2.3-py3-none-any.whl (30 kB)
-Downloading setuptools-80.7.1-py3-none-any.whl (1.2 MB)
-   ---------------------------------------- 1.2/1.2 MB 2.0 MB/s eta 0:00:00
-Using cached altgraph-0.17.4-py2.py3-none-any.whl (21 kB)
-Installing collected packages: altgraph, setuptools, pywin32-ctypes, pefile, packaging, pyinstaller-hooks-contrib, pyinstaller
-Successfully installed altgraph-0.17.4 packaging-25.0 pefile-2023.2.7 pyinstaller-6.13.0 pyinstaller-hooks-contrib-2025.4 pywin32-ctypes-0.2.3 setuptools-80.7.1
 
 [notice] A new release of pip is available: 24.3.1 -> 25.1.1
 [notice] To update, run: python.exe -m pip install --upgrade pip
 No se pudo encontrar C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_utf8.spec
-927 INFO: PyInstaller: 6.13.0, contrib hooks: 2025.4
-928 INFO: Python: 3.13.2
-963 INFO: Platform: Windows-11-10.0.26100-SP0
-963 INFO: Python environment: c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv
-965 INFO: wrote C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\SysToolKit.spec
-975 INFO: Module search paths (PYTHONPATH):
+799 INFO: PyInstaller: 6.13.0, contrib hooks: 2025.4
+802 INFO: Python: 3.13.2
+896 INFO: Platform: Windows-11-10.0.26100-SP0
+896 INFO: Python environment: c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv
+898 INFO: wrote C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\SysToolKit.spec
+912 INFO: Module search paths (PYTHONPATH):
 ['c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Scripts\\pyinstaller.exe',
  'C:\\Users\\sofja\\AppData\\Local\\Programs\\Python\\Python313\\python313.zip',
  'C:\\Users\\sofja\\AppData\\Local\\Programs\\Python\\Python313\\DLLs',
@@ -58,50 +41,50 @@ No se pudo encontrar C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_ut
  'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages',
  'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\setuptools\\_vendor',
  'C:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit']
-4996 INFO: checking Analysis
-4996 INFO: Building Analysis because Analysis-00.toc is non existent
-4996 INFO: Running Analysis Analysis-00.toc
-4997 INFO: Target bytecode optimization level: 0
-4997 INFO: Initializing module dependency graph...
-5001 INFO: Initializing module graph hook caches...
-5113 INFO: Analyzing modules for base_library.zip ...
-9392 INFO: Processing standard module hook 'hook-encodings.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-13134 INFO: Processing standard module hook 'hook-heapq.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-21506 INFO: Processing standard module hook 'hook-pickle.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-32903 INFO: Caching module dependency graph...
-33032 INFO: Looking for Python shared library...
-33046 INFO: Using Python shared library: C:\Users\sofja\AppData\Local\Programs\Python\Python313\python313.dll
-33046 INFO: Analyzing C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_utf8.py
-33176 INFO: Processing standard module hook 'hook-platform.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
-33556 INFO: Processing module hooks (post-graph stage)...
-33567 INFO: Performing binary vs. data reclassification (1 entries)
-33569 INFO: Looking for ctypes DLLs
-33599 INFO: Analyzing run-time hooks ...
-33601 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
-33614 INFO: Creating base_library.zip...
-33756 INFO: Looking for dynamic libraries
-34235 INFO: Extra DLL search directories (AddDllDirectory): []
-34235 INFO: Extra DLL search directories (PATH): []
-34646 INFO: Warnings written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\warn-SysToolKit.txt
-34693 INFO: Graph cross-reference written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\xref-SysToolKit.html
-34736 INFO: checking PYZ
-34736 INFO: Building PYZ because PYZ-00.toc is non existent
-34737 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz
-35467 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz completed successfully.
-35549 INFO: checking PKG
-35549 INFO: Building PKG because PKG-00.toc is non existent
-35549 INFO: Building PKG (CArchive) SysToolKit.pkg
-38688 INFO: Building PKG (CArchive) SysToolKit.pkg completed successfully.
-38693 INFO: Bootloader c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\run.exe
-38693 INFO: checking EXE
-38693 INFO: Building EXE because EXE-00.toc is non existent
-38693 INFO: Building EXE from EXE-00.toc
-38694 INFO: Copying bootloader EXE to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist\SysToolKit.exe
-39371 INFO: Copying icon to EXE
-39537 INFO: Copying 0 resources to EXE
-39537 INFO: Embedding manifest in EXE
-39678 INFO: Appending PKG archive to EXE
-39859 INFO: Fixing EXE headers
-45228 INFO: Building EXE from EXE-00.toc completed successfully.
-45231 INFO: Build complete! The results are available in: C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist
+3935 INFO: checking Analysis
+3935 INFO: Building Analysis because Analysis-00.toc is non existent
+3935 INFO: Running Analysis Analysis-00.toc
+3935 INFO: Target bytecode optimization level: 0
+3936 INFO: Initializing module dependency graph...
+3939 INFO: Initializing module graph hook caches...
+4090 INFO: Analyzing modules for base_library.zip ...
+7104 INFO: Processing standard module hook 'hook-encodings.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+10865 INFO: Processing standard module hook 'hook-heapq.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+17197 INFO: Processing standard module hook 'hook-pickle.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+27050 INFO: Caching module dependency graph...
+27157 INFO: Looking for Python shared library...
+27170 INFO: Using Python shared library: C:\Users\sofja\AppData\Local\Programs\Python\Python313\python313.dll
+27170 INFO: Analyzing C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\main_utf8.py
+27304 INFO: Processing standard module hook 'hook-platform.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+27677 INFO: Processing module hooks (post-graph stage)...
+27693 INFO: Performing binary vs. data reclassification (1 entries)
+27696 INFO: Looking for ctypes DLLs
+27731 INFO: Analyzing run-time hooks ...
+27733 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'c:\\Users\\sofja\\OneDrive\\Desktop\\trabajos\\SysToolKit\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+27769 INFO: Creating base_library.zip...
+27975 INFO: Looking for dynamic libraries
+28378 INFO: Extra DLL search directories (AddDllDirectory): []
+28378 INFO: Extra DLL search directories (PATH): []
+28867 INFO: Warnings written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\warn-SysToolKit.txt
+28916 INFO: Graph cross-reference written to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\xref-SysToolKit.html
+29082 INFO: checking PYZ
+29083 INFO: Building PYZ because PYZ-00.toc is non existent
+29083 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz
+29734 INFO: Building PYZ (ZlibArchive) C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\build\SysToolKit\PYZ-00.pyz completed successfully.
+29778 INFO: checking PKG
+29778 INFO: Building PKG because PKG-00.toc is non existent
+29778 INFO: Building PKG (CArchive) SysToolKit.pkg
+32934 INFO: Building PKG (CArchive) SysToolKit.pkg completed successfully.
+32938 INFO: Bootloader c:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\run.exe
+32938 INFO: checking EXE
+32938 INFO: Building EXE because EXE-00.toc is non existent
+32938 INFO: Building EXE from EXE-00.toc
+32939 INFO: Copying bootloader EXE to C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist\SysToolKit.exe
+32965 INFO: Copying icon to EXE
+32998 INFO: Copying 0 resources to EXE
+32998 INFO: Embedding manifest in EXE
+33012 INFO: Appending PKG archive to EXE
+33159 INFO: Fixing EXE headers
+37153 INFO: Building EXE from EXE-00.toc completed successfully.
+37157 INFO: Build complete! The results are available in: C:\Users\sofja\OneDrive\Desktop\trabajos\SysToolKit\dist
 [OK] Compilación exitosa. 

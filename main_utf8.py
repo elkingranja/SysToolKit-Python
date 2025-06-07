@@ -85,13 +85,16 @@ CATEGORIAS = {
     "6": [
         "modules/automation/startup_manager.py",
         "modules/automation/auto_update_checker.py",
-        "modules/automation/scheduled_task_helper.py"
+        "modules/automation/scheduled_task_helper.py",
+        "modules/automation/scheduler.py"
     ],
     "7": [
         "modules/logs/log_manager.py"
     ],
     "8": [
-        "modules/tools/file_tools.py"
+        "modules/tools/file_tools.py",
+        "modules/tools/app_installer.py",
+        "modules/tools/disk_manager.py"
     ]
 }
 
@@ -122,8 +125,11 @@ DESCRIPCIONES = {
     "modules/automation/startup_manager.py": "Gestiona programas que inician con el sistema.",
     "modules/automation/auto_update_checker.py": "Verifica y aplica actualizaciones automáticas.",
     "modules/automation/scheduled_task_helper.py": "Ayuda a programar tareas automáticas.",
+    "modules/automation/scheduler.py": "Planifica y ejecuta tareas programadas.",
     "modules/logs/log_manager.py": "Gestiona y visualiza logs del sistema.",
-    "modules/tools/file_tools.py": "Herramientas varias para archivos y documentos."
+    "modules/tools/file_tools.py": "Herramientas varias para archivos y documentos.",
+    "modules/tools/app_installer.py": "Instala aplicaciones automáticamente (Linux/Windows).",
+    "modules/tools/disk_manager.py": "Gestiona discos, particiones y busca duplicados."
 }
 
 # Filtra los módulos existentes para mostrar solo los que están presentes
